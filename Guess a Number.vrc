@@ -1,0 +1,67 @@
+
+
+	@to PlayGame (aMaxValue) static
+	{
+		aRnd = @new (@VRMath.Random).Initialize(),
+		aRnd.Randomize(),
+
+		aNumberToGuess = aRnd.RandomRange (0, aMaxValue + 1),
+
+		aMaxNumOfTries = @VRIntMath.Utils.IntLog (aMaxValue, 2) + 1,
+
+		aTryCount = 0,
+
+		@repeat {
+
+			@if (aTryCount >= aMaxNumOfTries) { @break },
+
+			@VRStd.Out << "you have " << (aMaxNumOfTries - aTryCount) << " tries left" << @std.endl,
+
+			@VRStd.Out << "try #" << aTryCount + 1 << @std.endl,
+
+			@VRStd.Out << "enter a number in the range [" << 0 << " .. " << aMaxValue << "]: ",
+			aStr = @VRStd.In.ReadStringLine(),
+			aNumber = @String.Parse.AsInt (aStr),
+
+			@switch
+			if (aNumber < aNumberToGuess) {
+
+				@VRStd.Out << "retry, the number to guess is > than " << aNumber << @std.endl,
+
+			}
+			else
+			if (aNumber > aNumberToGuess) {
+
+				@VRStd.Out << "retry, the number to guess is < than " << aNumber << @std.endl,
+
+			}
+			else {
+
+				@VRStd.Out << "ok (" << aNumberToGuess << " == " << aNumber << ")" << " you win !!!" << @std.endl,
+
+				@return
+
+			},
+
+			++ aTryCount
+		},
+
+		@VRStd.Out << "sorry, you loose !!" << @std.endl,
+	},
+
+
+	@proc Main() static
+	{
+		@VRStd.Out << "Guess a Number" << @std.endl,
+
+		@VRStd.Out << "enter max value: ",
+		aStr = @VRStd.In.ReadStringLine(),
+		aMaxValue = @String.Parse.AsInt (aStr),
+
+		@VRStd.Out << "Guess a Number in the range [" << 0 << " .. " << aMaxValue << "]" << @std.endl,
+
+		@thisclass.PlayGame (aMaxValue)
+	},
+
+	@thisclass.Main(),
+	""
