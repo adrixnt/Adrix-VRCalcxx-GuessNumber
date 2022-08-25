@@ -1,4 +1,10 @@
 
+	// system startup init
+	$loadmodule (
+		$getenvvarvalue ("AxVRCalcxxSystemStartUpInitBaseFolder") +
+		"/StartUpInitModules/VRSystemStartUpInit.vrcm"
+	),
+
 
 	@to PlayGame (aMaxValue) static
 	{
@@ -52,6 +58,11 @@
 
 	@proc Main() static
 	{
+		// load all VR Sys Std RTLib
+		@System.LoadModulesFromFolderTree (
+			@System.GetEnvVarValue("AxVRCalcxxSysStdScriptedRTLibBaseFolder") + "/Library/*.vrcm"
+		),
+
 		@VRStd.Out << "Guess a Number" << @std.endl,
 
 		@VRStd.Out << "enter max value: ",
