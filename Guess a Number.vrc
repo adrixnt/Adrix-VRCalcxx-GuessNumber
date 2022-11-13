@@ -5,6 +5,15 @@
 		"/StartUpInitModules/VRSystemStartUpInit.vrcm"
 	),
 
+	@to PrintNumbersOnStdOut (aNumbers) static
+	{
+		@VRStd.Out << "[ ",
+		@for (aValue : aNumbers) {
+			@VRStd.Out << aValue << " "
+		},
+		@VRStd.Out << "]"
+	},
+
 
 	@to PlayGame (aMaxValue) static
 	{
@@ -15,11 +24,15 @@
 
 		aMaxNumOfTries = @VRIntMath.Utils.IntLog (aMaxValue, 2) + 1,
 
+		aNumbers = @array(),
+
 		aTryCount = 0,
 
 		@repeat {
 
 			@if (aTryCount >= aMaxNumOfTries) { @break },
+
+			@VRStd.Out << "prev: ", @thisclass.PrintNumbersOnStdOut (aNumbers), @VRStd.Out << @VRStd.EndL,
 
 			@VRStd.Out << "you have " << (aMaxNumOfTries - aTryCount) << " tries left" << @std.endl,
 
@@ -28,6 +41,8 @@
 			@VRStd.Out << "enter a number in the range [" << 0 << " .. " << aMaxValue << "]: ",
 			aStr = @VRStd.In.ReadStringLine(),
 			aNumber = @String.Parse.AsInt (aStr),
+
+			@IIContainer.AddItemTo (aNumbers, aNumber),
 
 			@switch
 			if (aNumber < aNumberToGuess) {
@@ -43,7 +58,8 @@
 			}
 			else {
 
-				@VRStd.Out << "ok (" << aNumberToGuess << " == " << aNumber << ")" << " you win !!!" << @std.endl,
+				@VRStd.Out << "ok (" << aNumberToGuess << " == " << aNumber << ")" << @std.endl,
+				@VRStd.Out << "you win !!!" << @std.endl,
 
 				@return
 
@@ -52,6 +68,7 @@
 			++ aTryCount
 		},
 
+		@VRStd.Out << "the Number to Guess was (" << aNumberToGuess << ")" << @std.endl,
 		@VRStd.Out << "sorry, you loose !!" << @std.endl,
 	},
 
