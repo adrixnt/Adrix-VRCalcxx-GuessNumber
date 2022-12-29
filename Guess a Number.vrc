@@ -1,9 +1,41 @@
-
+/*
 	// system startup init
 	$loadmodule (
 		$getenvvarvalue ("AxVRCalcxxSystemStartUpInitBaseFolder") +
 		"/StartUpInitModules/VRSystemStartUpInit.vrcm"
 	),
+
+		// load all VR Sys Std RTLib
+		@System.LoadModulesFromFolderTree (
+			@System.GetEnvVarValue("AxVRCalcxxSysStdScriptedRTLibBaseFolder") + "/Library/ *.vrcm"
+		),
+*/
+
+// $try {
+
+	// load required packages
+
+	$classvar.theSysInitLib = $loadpackage ($bplfilename("Ax.VRCalcxxEngine.BasicSystem.FuncsRegPkg")),
+
+	@on "@ClassModule::OnDestroy"() static
+	{
+		@system.out << "unloading packages ..." << @std.nl,
+
+		$if ($defined $classvar.theSysInitLib) {
+			$if ($classvar.theSysInitLib !== $null) {
+				$unloadpackage ($classvar.theSysInitLib)
+			}
+		}
+	},
+
+	// load required modules
+
+	@loadmodule (@getenvvarvalue("AxVRCalcxxSysStdScriptedRTLibBaseFolder") + "/Library/System Base/Sys Std Objects/Sys Std Objects.vrcm"),
+
+	@loadmodule (@getenvvarvalue("AxVRCalcxxSysStdScriptedRTLibBaseFolder") + "/Library/System Classes/Math/Int Math/Int Math Utils.vrcm"),
+
+	@loadmodule (@getenvvarvalue("AxVRCalcxxSysStdScriptedRTLibBaseFolder") + "/Library/System Classes/Math/Random/Random.vrcm"),
+
 
 	@to PrintNumbersOnStdOut (aNumbers) static
 	{
@@ -75,11 +107,6 @@
 
 	@proc Main() static
 	{
-		// load all VR Sys Std RTLib
-		@System.LoadModulesFromFolderTree (
-			@System.GetEnvVarValue("AxVRCalcxxSysStdScriptedRTLibBaseFolder") + "/Library/*.vrcm"
-		),
-
 		@VRStd.Out << "Guess a Number" << @std.endl,
 
 		@VRStd.Out << "enter max value: ",
@@ -91,5 +118,16 @@
 		@thisclass.PlayGame (aMaxValue)
 	},
 
-	@thisclass.Main(),
-	""
+	@thisclass.Main()
+
+/*
+} finally {
+
+	$if ($defined $classvar.theSysInitLib) {
+		$if ($classvar.theSysInitLib !== $null) {
+			$unloadpackage ($classvar.theSysInitLib)
+		}
+	}
+
+}
+*/
